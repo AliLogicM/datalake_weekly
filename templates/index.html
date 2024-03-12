@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tweet Sentiment Analysis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $("#analyze-button").click(function(){
+          var tweet = $("#tweet-input").val();
+          $.ajax({
+            url: '/predict',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ tweet: tweet }),
+            success: function(data) {
+              // Mapeo de emociones a emojis ASCII
+              var emojiMap = {
+                'Sadness': ':( ',
+                'Joy': ':) ',
+                'Love': '<3 ',
+                'Anger': '>:( ',
+                'Fear': 'D: ',
+                'Surprise': ':O '
+              };
+              // Selecciona el emoji apropiado
+              var emoji = emojiMap[data.prediction];
+              // Actualiza el elemento de resultado en la página
+              $('#result').text('Sentiment: ' + data.prediction + ' ' + emoji);
+            }
+          });
+        });
+      });
+      </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mt-5">Tweet Sentiment Analysis</h1>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <form id="tweet-form" class="mt-5">
+                    <div class="form-group">
+                        <textarea id="tweet-input" class="form-control" placeholder="Enter your tweet"></textarea>
+                    </div>
+                    <button id="analyze-button" type="button" class="btn btn-primary">Analyze</button>
+                </form>
+                <p id="result" class="mt-3"></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
